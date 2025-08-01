@@ -1,0 +1,38 @@
+<!-- views/student/appointments.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Appointment</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Book Appointment</h1>
+    <nav>
+      <a href="/student/dashboard">Dashboard</a>
+      <a href="/student/profile">Profile</a>
+      <a href="/student/history">History</a>
+      <a href="/auth/logout">Logout</a>
+    </nav>
+  </header>
+  <main>
+    <% if (success) { %>
+      <p class="success"><%= success %></p>
+    <% } %>
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+    <form action="/student/appointments" method="POST">
+      <label for="date">Date:</label>
+      <input type="date" id="date" name="date" required>
+      <label for="time">Time (08:00 - 17:00):</label>
+      <input type="time" id="time" name="time" min="08:00" max="17:00" required>
+      <label for="reason">Reason:</label>
+      <textarea id="reason" name="reason" required></textarea>
+      <button type="submit">Book Appointment</button>
+    </form>
+  </main>
+</body>
+</html>

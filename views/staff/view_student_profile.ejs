@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Profile</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Student Profile</h1>
+    <nav>
+      <a href="/staff/dashboard">Dashboard</a>
+      <a href="/staff/manage_appointments">Manage Appointments</a>
+      <a href="/staff/manage_records">Manage Records</a>
+      <a href="/staff/manage_students">Manage Students</a>
+      <a href="/auth/logout">Logout</a>
+    </nav>
+  </header>
+  <main>
+    <% if (success) { %>
+      <p class="success"><%= success %></p>
+    <% } %>
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+    <h2><%= student.name %> <%= student.surname %></h2>
+    <p>Student Number: <%= student.student_number %></p>
+    <p>Email: <%= student.email %></p>
+    <p>ID Number: <%= student.id_number || 'Not provided' %></p>
+    <p>Date of Birth: <%= student.date_of_birth || 'Not provided' %></p>
+    <p>Citizenship: <%= student.citizenship || 'Not provided' %></p>
+    <p>Disability: <%= student.disability || 'None' %></p>
+    <p>Gender: <%= student.gender || 'Not provided' %></p>
+    <p>Marital Status: <%= student.marital_status || 'Not provided' %></p>
+    <p>Cellphone Number: <%= student.cellphone_number || 'Not provided' %></p>
+    <a href="/staff/manage_records">Back to Records</a>
+  </main>
+</body>
+</html>

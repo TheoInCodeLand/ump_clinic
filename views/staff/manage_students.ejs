@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Students</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Manage Students</h1>
+    <nav>
+      <a href="/staff/dashboard">Dashboard</a>
+      <a href="/staff/manage_appointments">Manage Appointments</a>
+      <a href="/staff/manage_records">Manage Records</a>
+      <a href="/auth/logout">Logout</a>
+    </nav>
+  </header>
+  <main>
+    <% if (success) { %>
+      <p class="success"><%= success %></p>
+    <% } %>
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+    <h2>Add Student</h2>
+    <form action="/staff/manage_students/add" method="POST">
+      <label for="student_number">Student Number:</label>
+      <input type="text" id="student_number" name="student_number" required>
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required>
+      <label for="surname">Surname:</label>
+      <input type="text" id="surname" name="surname" required>
+      <label for="id_number">ID Number:</label>
+      <input type="text" id="id_number" name="id_number" required>
+      <button type="submit">Add Student</button>
+    </form>
+    <h2>Upload Students</h2>
+    <form action="/staff/manage_students/upload" method="POST" enctype="multipart/form-data">
+      <label for="excelFile">Upload Excel File:</label>
+      <input type="file" id="excelFile" name="excelFile" accept=".xlsx,.xls" required>
+      <button type="submit">Upload</button>
+    </form>
+    <h2>Current Students</h2>
+    <ul>
+      <% students.forEach(student => { %>
+        <li><%= student.student_number %> - <%= student.name %> <%= student.surname %></li>
+      <% }) %>
+    </ul>
+  </main>
+</body>
+</html>

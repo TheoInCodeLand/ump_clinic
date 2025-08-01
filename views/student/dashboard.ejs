@@ -1,0 +1,36 @@
+<!-- views/student/dashboard.ejs (add flash messages) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Student Dashboard</h1>
+    <nav>
+      <a href="/student/profile">Profile</a>
+      <a href="/student/appointments">Book Appointment</a>
+      <a href="/student/history">History</a>
+      <a href="/auth/logout">Logout</a>
+    </nav>
+  </header>
+  <main>
+    <% if (success) { %>
+      <p class="success"><%= success %></p>
+    <% } %>
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+    <h2>Welcome, <%= user.name %></h2>
+    <h3>Pending Appointments</h3>
+    <ul>
+      <% appointments.forEach(appointment => { %>
+        <li><%= appointment.date %> at <%= appointment.time %> - <%= appointment.reason %></li>
+      <% }) %>
+    </ul>
+  </main>
+</body>
+</html>

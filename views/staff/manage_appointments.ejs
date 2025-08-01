@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Appointments</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Manage Appointments</h1>
+    <nav>
+      <a href="/staff/dashboard">Dashboard</a>
+      <a href="/staff/manage_records">Manage Records</a>
+      <a href="/staff/manage_students">Manage Students</a>
+      <a href="/auth/logout">Logout</a>
+    </nav>
+  </header>
+  <main>
+    <% if (success) { %>
+      <p class="success"><%= success %></p>
+    <% } %>
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+    <h2>All Appointments</h2>
+    <ul>
+      <% appointments.forEach(appointment => { %>
+        <li>
+          <%= appointment.date %> at <%= appointment.time %> - <%= appointment.name %> <%= appointment.surname %>: <%= appointment.reason %>
+          <form action="/staff/manage_appointments/<%= appointment.id %>" method="POST" style="display:inline;">
+            <select name="status">
+              <option value="pending" <%= appointment.status === 'pending' ? 'selected' : '' %>>Pending</option>
+              <option value="confirmed" <%= appointment.status === 'confirmed' ? 'selected' : '' %>>Confirmed</option>
+              <option value="cancelled" <%= appointment.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+            </select>
+            <button type="submit">Update</button>
+          </form>
+        </li>
+      <% }) %>
+    </ul>
+  </main>
+</body>
+</html>

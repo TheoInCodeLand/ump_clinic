@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Dashboard</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Staff Dashboard</h1>
+    <nav>
+      <a href="/staff/manage_appointments">Manage Appointments</a>
+      <a href="/staff/manage_records">Manage Records</a>
+      <a href="/staff/manage_students">Manage Students</a>
+      <a href="/auth/logout">Logout</a>
+    </nav>
+  </header>
+  <main>
+    <% if (success) { %>
+      <p class="success"><%= success %></p>
+    <% } %>
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+    <h2>Pending Appointments</h2>
+    <ul>
+      <% appointments.forEach(appointment => { %>
+        <li><%= appointment.date %> at <%= appointment.time %> - <%= appointment.name %> <%= appointment.surname %>: <%= appointment.reason %></li>
+      <% }) %>
+    </ul>
+  </main>
+</body>
+</html>

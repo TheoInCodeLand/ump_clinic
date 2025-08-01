@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UMP Clinic System</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Welcome to UMP Clinic System</h1>
+    <nav>
+      <a href="/auth/login">Login</a>
+    </nav>
+  </header>
+  <main>
+    <% if (success) { %>
+      <p class="success"><%= success %></p>
+    <% } %>
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+    <section>
+      <h2>Streamlined Healthcare for Students</h2>
+      <p>Book appointments, view medical history, and manage your health records seamlessly.</p>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 University of Mpumalanga Clinic</p>
+  </footer>
+</body>
+</html>

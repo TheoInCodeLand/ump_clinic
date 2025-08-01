@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visit History</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Visit History</h1>
+    <nav>
+      <a href="/student/dashboard">Dashboard</a>
+      <a href="/student/profile">Profile</a>
+      <a href="/student/appointments">Book Appointment</a>
+      <a href="/auth/logout">Logout</a>
+    </nav>
+  </header>
+  <main>
+    <ul>
+      <% visits.forEach(visit => { %>
+        <li>
+          <p>Date: <%= visit.date %></p>
+          <p>Diagnosis: <%= visit.diagnosis %></p>
+          <p>Notes: <%= visit.notes %></p>
+          <% if (visit.medication) { %>
+            <p>Prescription: <%= visit.medication %>, <%= visit.dosage %>, <%= visit.instructions %></p>
+          <% } %>
+        </li>
+      <% }) %>
+    </ul>
+  </main>
+</body>
+</html>

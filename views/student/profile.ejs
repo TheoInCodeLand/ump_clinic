@@ -1,0 +1,58 @@
+<!-- views/student/profile.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Profile</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Student Profile</h1>
+    <% if (profile?.profile_complete) { %>
+      <nav>
+        <a href="/student/dashboard">Dashboard</a>
+        <a href="/student/appointments">Book Appointment</a>
+        <a href="/student/history">History</a>
+        <a href="/auth/logout">Logout</a>
+      </nav>
+    <% } %>
+  </header>
+  <main>
+    <% if (!profile?.profile_complete) { %>
+      <p class="error">Please complete your profile to access the system.</p>
+    <% } %>
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+    <form action="/student/profile" method="POST">
+      <label for="id_number">ID Number/Passport Number:</label>
+      <input type="text" id="id_number" name="id_number" value="<%= profile?.id_number || '' %>" required>
+      <label for="date_of_birth">Date of Birth:</label>
+      <input type="date" id="date_of_birth" name="date_of_birth" value="<%= profile?.date_of_birth || '' %>" required>
+      <label for="citizenship">Citizenship:</label>
+      <input type="text" id="citizenship" name="citizenship" value="<%= profile?.citizenship || '' %>" required>
+      <label for="disability">Disability (if any):</label>
+      <input type="text" id="disability" name="disability" value="<%= profile?.disability || '' %>">
+      <label for="gender">Gender:</label>
+      <select id="gender" name="gender" required>
+        <option value="" <%= !profile?.gender ? 'selected' : '' %>>Select</option>
+        <option value="Male" <%= profile?.gender === 'Male' ? 'selected' : '' %>>Male</option>
+        <option value="Female" <%= profile?.gender === 'Female' ? 'selected' : '' %>>Female</option>
+        <option value="Other" <%= profile?.gender === 'Other' ? 'selected' : '' %>>Other</option>
+      </select>
+      <label for="marital_status">Marital Status:</label>
+      <select id="marital_status" name="marital_status" required>
+        <option value="" <%= !profile?.marital_status ? 'selected' : '' %>>Select</option>
+        <option value="Single" <%= profile?.marital_status === 'Single' ? 'selected' : '' %>>Single</option>
+        <option value="Married" <%= profile?.marital_status === 'Married' ? 'selected' : '' %>>Married</option>
+        <option value="Other" <%= profile?.marital_status === 'Other' ? 'selected' : '' %>>Other</option>
+      </select>
+      <label for="cellphone_number">Cellphone Number:</label>
+      <input type="text" id="cellphone_number" name="cellphone_number" value="<%= profile?.cellphone_number || '' %>" required>
+      <button type="submit">Update Profile</button>
+    </form>
+  </main>
+</body>
+</html>
