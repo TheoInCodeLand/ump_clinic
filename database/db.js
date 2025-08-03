@@ -82,7 +82,6 @@ db.serialize(() => {
     )
   `);
 
-  // Create indexes for performance
   db.run(`CREATE INDEX IF NOT EXISTS idx_users_student_number ON users(student_number)`);
   db.run(`CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)`);
   db.run(`CREATE INDEX IF NOT EXISTS idx_appointments_student_id ON appointments(student_id)`);

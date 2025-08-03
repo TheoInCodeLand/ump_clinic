@@ -4,49 +4,135 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manage Students</title>
-  <link rel="stylesheet" href="/css/styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom CSS for additional styling */
+    .sidebar-link {
+      transition: all 0.3s ease;
+    }
+    .sidebar-link:hover {
+      transform: translateX(5px);
+    }
+    .notification {
+      animation: slideIn 0.5s ease-out;
+    }
+    @keyframes slideIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .form-input, .form-file {
+      transition: all 0.2s ease;
+    }
+    .form-input:focus, .form-file:focus {
+      outline: none;
+      ring: 2px solid #3b82f6;
+    }
+  </style>
 </head>
-<body>
-  <header>
-    <h1>Manage Students</h1>
-    <nav>
-      <a href="/staff/dashboard">Dashboard</a>
-      <a href="/staff/manage_appointments">Manage Appointments</a>
-      <a href="/staff/manage_records">Manage Records</a>
-      <a href="/auth/logout">Logout</a>
-    </nav>
-  </header>
-  <main>
-    <% if (success) { %>
-      <p class="success"><%= success %></p>
-    <% } %>
-    <% if (error) { %>
-      <p class="error"><%= error %></p>
-    <% } %>
-    <h2>Add Student</h2>
-    <form action="/staff/manage_students/add" method="POST">
-      <label for="student_number">Student Number:</label>
-      <input type="text" id="student_number" name="student_number" required>
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" required>
-      <label for="surname">Surname:</label>
-      <input type="text" id="surname" name="surname" required>
-      <label for="id_number">ID Number:</label>
-      <input type="text" id="id_number" name="id_number" required>
-      <button type="submit">Add Student</button>
-    </form>
-    <h2>Upload Students</h2>
-    <form action="/staff/manage_students/upload" method="POST" enctype="multipart/form-data">
-      <label for="excelFile">Upload Excel File:</label>
-      <input type="file" id="excelFile" name="excelFile" accept=".xlsx,.xls" required>
-      <button type="submit">Upload</button>
-    </form>
-    <h2>Current Students</h2>
-    <ul>
-      <% students.forEach(student => { %>
-        <li><%= student.student_number %> - <%= student.name %> <%= student.surname %></li>
-      <% }) %>
-    </ul>
-  </main>
+<body class="bg-gray-50 font-sans antialiased text-gray-900">
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-lg border-r border-gray-200">
+      <div class="p-6 border-b border-gray-200">
+        <h1 class="text-2xl font-bold text-gray-900">Manage Students</h1>
+      </div>
+      <nav class="mt-6">
+        <a href="/staff/dashboard" class="sidebar-link block px-6 py-3 text-gray-700 font-medium hover:bg-blue-50 hover:text-blue-700 transition">Dashboard</a>
+        <a href="/staff/manage_appointments" class="sidebar-link block px-6 py-3 text-gray-700 font-medium hover:bg-blue-50 hover:text-blue-700 transition">Manage Appointments</a>
+        <a href="/staff/manage_records" class="sidebar-link block px-6 py-3 text-gray-700 font-medium hover:bg-blue-50 hover:text-blue-700 transition">Manage Records</a>
+        <a href="/auth/logout" class="sidebar-link block px-6 py-3 text-gray-700 font-medium hover:bg-red-50 hover:text-red-700 transition">Logout</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8 overflow-auto bg-gray-100">
+      <!-- Notifications -->
+      <% if (success) { %>
+        <div id="success-notification" class="notification mb-6 p-4 bg-green-100 text-green-800 rounded-lg shadow-md flex justify-between items-center">
+          <span><%= success %></span>
+          <button onclick="dismissNotification('success-notification')" class="text-green-600 hover:text-green-800">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      <% } %>
+      <% if (error) { %>
+        <div id="error-notification" class="notification mb-6 p-4 bg-red-100 text-red-800 rounded-lg shadow-md flex justify-between items-center">
+          <span><%= error %></span>
+          <button onclick="dismissNotification('error-notification')" class="text-red-600 hover:text-red-800">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      <% } %>
+
+      <!-- Add Student -->
+      <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Add Student</h2>
+        <form action="/staff/manage_students/add" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="student_number" class="block text-sm font-medium text-gray-700">Student Number:</label>
+            <input type="text" id="student_number" name="student_number" required class="form-input mt-1 block w-full bg-gray-100 border border-gray-300 text-gray-700 rounded-md p-2 focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-700">Name:</label>
+            <input type="text" id="name" name="name" required class="form-input mt-1 block w-full bg-gray-100 border border-gray-300 text-gray-700 rounded-md p-2 focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label for="surname" class="block text-sm font-medium text-gray-700">Surname:</label>
+            <input type="text" id="surname" name="surname" required class="form-input mt-1 block w-full bg-gray-100 border border-gray-300 text-gray-700 rounded-md p-2 focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label for="id_number" class="block text-sm font-medium text-gray-700">ID Number:</label>
+            <input type="text" id="id_number" name="id_number" required class="form-input mt-1 block w-full bg-gray-100 border border-gray-300 text-gray-700 rounded-md p-2 focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div class="md:col-span-2">
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Add Student</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Upload Students -->
+      <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Upload Students</h2>
+        <form action="/staff/manage_students/upload" method="POST" enctype="multipart/form-data" class="flex items-center space-x-4">
+          <div class="flex-1">
+            <label for="excelFile" class="block text-sm font-medium text-gray-700">Upload Excel File:</label>
+            <input type="file" id="excelFile" name="excelFile" accept=".xlsx,.xls" required class="form-file mt-1 block w-full bg-gray-100 border border-gray-300 text-gray-700 rounded-md p-2 focus:ring-2 focus:ring-blue-500">
+          </div>
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition mt-6">Upload</button>
+        </form>
+      </div>
+
+      <!-- Current Students -->
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Current Students</h2>
+        <ul class="space-y-3">
+          <% students.forEach(student => { %>
+            <li class="p-4 bg-gray-50 rounded-md hover:bg-gray-200 transition">
+              <span class="font-medium text-gray-800"><%= student.student_number %></span>
+              <span class="text-gray-600"> - <%= student.name %> <%= student.surname %></span>
+            </li>
+          <% }) %>
+        </ul>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // JavaScript for dismissing notifications
+    function dismissNotification(id) {
+      const element = document.getElementById(id);
+      if (element) {
+        element.style.transition = 'opacity 0.3s ease';
+        element.style.opacity = '0';
+        setTimeout(() => {
+          element.remove();
+        }, 300);
+      }
+    }
+  </script>
 </body>
 </html>

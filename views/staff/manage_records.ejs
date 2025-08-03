@@ -4,50 +4,132 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manage Student Records</title>
-  <link rel="stylesheet" href="/css/styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom CSS for additional styling */
+    .sidebar-link {
+      transition: all 0.3s ease;
+    }
+    .sidebar-link:hover {
+      transform: translateX(5px);
+    }
+    .notification {
+      animation: slideIn 0.5s ease-out;
+    }
+    @keyframes slideIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .form-input, .form-textarea, .form-select {
+      transition: all 0.2s ease;
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      outline: none;
+      ring: 2px solid #3b82f6;
+    }
+  </style>
 </head>
-<body>
-  <header>
-    <h1>Manage Student Records</h1>
-    <nav>
-      <a href="/staff/dashboard">Dashboard</a>
-      <a href="/staff/manage_appointments">Manage Appointments</a>
-      <a href="/staff/manage_students">Manage Students</a>
-      <a href="/auth/logout">Logout</a>
-    </nav>
-  </header>
-  <main>
-    <% if (success) { %>
-      <p class="success"><%= success %></p>
-    <% } %>
-    <% if (error) { %>
-      <p class="error"><%= error %></p>
-    <% } %>
-    <% students.forEach(student => { %>
-      <div>
-        <h3>
-          <%= student.name %> <%= student.surname %>
-          <a href="/staff/manage_records/<%= student.id %>/profile">View Profile</a>
-        </h3>
-        <form action="/staff/manage_records/<%= student.id %>/visit" method="POST">
-          <label for="date_<%= student.id %>">Visit Date:</label>
-          <input type="date" id="date_<%= student.id %>" name="date" required>
-          <label for="diagnosis_<%= student.id %>">Diagnosis:</label>
-          <input type="text" id="diagnosis_<%= student.id %>" name="diagnosis" required placeholder="e.g., Influenza">
-          <label for="notes_<%= student.id %>">Notes:</label>
-          <textarea id="notes_<%= student.id %>" name="notes" placeholder="e.g., Patient reports fever for 3 days"></textarea>
-          <label for="medication_<%= student.id %>">Medication:</label>
-          <input type="text" id="medication_<%= student.id %>" name="medication" placeholder="e.g., Amoxicillin">
-          <label for="dosage_<%= student.id %>">Dosage:</label>
-          <input type="text" id="dosage_<%= student.id %>" name="dosage" placeholder="e.g., 500mg twice daily">
-          <label for="duration_<%= student.id %>">Duration (days):</label>
-          <input type="number" id="duration_<%= student.id %>" name="duration" min="1" placeholder="e.g., 7">
-          <label for="instructions_<%= student.id %>">Instructions:</label>
-          <textarea id="instructions_<%= student.id %>" name="instructions" placeholder="e.g., Take with food"></textarea>
-          <button type="submit">Add Visit</button>
-        </form>
+<body class="bg-gray-50 font-sans antialiased text-gray-900">
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-lg border-r border-gray-200">
+      <div class="p-6 border-b border-gray-200">
+        <h1 class="text-2xl font-bold text-gray-900">Manage Student Records</h1>
       </div>
-    <% }) %>
-  </main>
+      <nav class="mt-6">
+        <a href="/staff/dashboard" class="sidebar-link block px-6 py-3 text-gray-700 font-medium hover:bg-blue-50 hover:text-blue-700 transition">Dashboard</a>
+        <a href="/staff/manage_appointments" class="sidebar-link block px-6 py-3 text-gray-700 font-medium hover:bg-blue-50 hover:text-blue-700 transition">Manage Appointments</a>
+        <a href="/staff/manage_students" class="sidebar-link block px-6 py-3 text-gray-700 font-medium hover:bg-blue-50 hover:text-blue-700 transition">Manage Students</a>
+        <a href="/auth/logout" class="sidebar-link block px-6 py-3 text-gray-700 font-medium hover:bg-red-50 hover:text-red-700 transition">Logout</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8 overflow-auto bg-gray-100">
+      <!-- Notifications -->
+      <% if (success) { %>
+        <div id="success-notification" class="notification mb-6 p-4 bg-green-100 text-green-800 rounded-lg shadow-md flex justify-between items-center">
+          <span><%= success %></span>
+          <button onclick="dismissNotification('success-notification')" class="text-green-600 hover:text-green-800">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      <% } %>
+      <% if (error) { %>
+        <div id="error-notification" class="notification mb-6 p-4 bg-red-100 text-red-800 rounded-lg shadow-md flex justify-between items-center">
+          <span><%= error %></span>
+          <button onclick="dismissNotification('error-notification')" class="text-red-600 hover:text-red-800">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      <% } %>
+
+      <!-- Student Records -->
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Student Records</h2>
+        <% students.forEach(student => { %>
+          <div class="mb-6 p-4 bg-gray-50 rounded-md">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-lg font-semibold text-gray-800">
+                <%= student.name %> <%= student.surname %>
+              </h3>
+              <a href="/staff/manage_records/<%= student.id %>/profile" class="text-blue-600 hover:text-blue-800 font-medium">View Profile</a>
+            </div>
+            <form action="/staff/manage_records/<%= student.id %>/visit" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="date_<%= student.id %>" class="block text-sm font-medium text-gray-700">Visit Date:</label>
+                <input type="date" id="date_<%= student.id %>" name="date" required class="form-input mt-1 block w-full bg-gray-100 border border-gray-300 text-gray-700 rounded-md p-2 focus:ring-2 focus:ring-blue-500">
+              </div>
+              <div>
+                <label for="diagnosis_<%= student.id %>" class="block text-sm font-medium text-gray-700">Diagnosis:</label>
+                <input type="text" id="diagnosis_<%= student.id %>" name="diagnosis" required placeholder="e.g., Influenza" class="form-input mt-1 block w-full bg-gray-100 border border-gray-300 text-gray-700 rounded-md p-2 focus:ring-2 focus:ring-blue-500">
+              </div>
+              <div class="md:col-span-2">
+                <label for="notes_<%= student.id %>" class="block text-sm font-medium text-gray-700">Notes:</label>
+                <textarea id="notes_<%= student.id %>" name="notes" placeholder="e.g., Patient reports fever for 3 days" class="form-textarea mt-1 block w-full bg-gray-100 border border-gray-300 text-gray-700 rounded-md p-2 focus:ring-2 focus:ring-blue-500"></textarea>
+              </div>
+              <div>
+                <label for="medication_<%= student.id %>" class="block text-sm font-medium text-gray-700">Medication:</label>
+                <input type="text" id="medication_<%= student.id %>" name="medication" placeholder="e.g., Amoxicillin" class="form-input mt-1 block w-full bg-gray-100 border border-gray-300 text-gray-700 rounded-md p-2 focus:ring-2 focus:ring-blue-500">
+              </div>
+              <div>
+                <label for="dosage_<%= student.id %>" class="block text-sm font-medium text-gray-700">Dosage:</label>
+                <input type="text" id="dosage_<%= student.id %>" name="dosage" placeholder="e.g., 500mg twice daily" class="form-input mt-1 block w-full bg-gray-100 border border-gray-300 text-gray-700 rounded-md p-2 focus:ring-2 focus:ring-blue-500">
+              </div>
+              <div>
+                <label for="duration_<%= student.id %>" class="block text-sm font-medium text-gray-700">Duration (days):</label>
+                <input type="number" id="duration_<%= student.id %>" name="duration" min="1" placeholder="e.g., 7" class="form-input mt-1 block w-full bg-gray-100 border border-gray-300 text-gray-700 rounded-md p-2 focus:ring-2 focus:ring-blue-500">
+              </div>
+              <div class="md:col-span-2">
+                <label for="instructions_<%= student.id %>" class="block text-sm font-medium text-gray-700">Instructions:</label>
+                <textarea id="instructions_<%= student.id %>" name="instructions" placeholder="e.g., Take with food" class="form-textarea mt-1 block w-full bg-gray-100 border border-gray-300 text-gray-700 rounded-md p-2 focus:ring-2 focus:ring-blue-500"></textarea>
+              </div>
+              <div class="md:col-span-2">
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Add Visit</button>
+              </div>
+            </form>
+          </div>
+        <% }) %>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // JavaScript for dismissing notifications
+    function dismissNotification(id) {
+      const element = document.getElementById(id);
+      if (element) {
+        element.style.transition = 'opacity 0.3s ease';
+        element.style.opacity = '0';
+        setTimeout(() => {
+          element.remove();
+        }, 300);
+      }
+    }
+  </script>
 </body>
 </html>
