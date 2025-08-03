@@ -8,7 +8,7 @@
 </head>
 <body>
   <header>
-    <h1>Visit History</h1>
+    <h1>Your Medical History</h1>
     <nav>
       <a href="/student/dashboard">Dashboard</a>
       <a href="/student/profile">Profile</a>
@@ -17,18 +17,51 @@
     </nav>
   </header>
   <main>
-    <ul>
-      <% visits.forEach(visit => { %>
-        <li>
-          <p>Date: <%= visit.date %></p>
-          <p>Diagnosis: <%= visit.diagnosis %></p>
-          <p>Notes: <%= visit.notes %></p>
-          <% if (visit.medication) { %>
-            <p>Prescription: <%= visit.medication %>, <%= visit.dosage %>, <%= visit.instructions %></p>
-          <% } %>
-        </li>
-      <% }) %>
-    </ul>
+    <% if (success) { %>
+      <p class="success"><%= success %></p>
+    <% } %>
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+    <h2>Your Clinic Visits</h2>
+    <% if (visits.length === 0) { %>
+      <p>No visits recorded.</p>
+    <% } else { %>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Diagnosis</th>
+            <th>Notes</th>
+            <th>Clinician</th>
+            <th>Prescription</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% visits.forEach(visit => { %>
+            <tr>
+              <td><%= new Date(visit.date).toLocaleDateString() %></td>
+              <td><%= visit.diagnosis %></td>
+              <td><%= visit.notes || 'None' %></td>
+              <td><%= visit.clinician_name ? `${visit.clinician_name} ${visit.clinician_surname}` : 'N/A' %></td>
+              <td>
+                <% if (visit.medication) { %>
+                  <%= visit.medication %> (<%= visit.dosage %>)<br>
+                  <% if (visit.instructions) { %>
+                    Instructions: <%= visit.instructions %><br>
+                  <% } %>
+                  Duration: <%= visit.duration %> days
+                <% } else { %>
+                  None
+                <% } %>
+              </td>
+              <td><%= visit.prescription_status || 'N/A' %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
   </main>
 </body>
 </html>

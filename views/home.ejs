@@ -1,32 +1,687 @@
+<% if (success) { %>
+  <p class="success"><%= success %></p>
+<% } %>
+<% if (error) { %>
+  <p class="error"><%= error %></p>
+<% } %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UMP Clinic System</title>
-  <link rel="stylesheet" href="/css/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Health Clinic - Your Health, Our Priority</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #ffffff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #93c5fd;
+        }
+
+        .mobile-menu {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 120px 0 80px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: white;
+            color: #1e3a8a;
+        }
+
+        .btn-primary:hover {
+            background-color: #f8fafc;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background-color: white;
+            color: #1e3a8a;
+        }
+
+        /* Sections */
+        section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #1e3a8a;
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #6b7280;
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* About Section */
+        .about {
+            background-color: #f8fafc;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-text h3 {
+            color: #1e3a8a;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .about-text p {
+            color: #4b5563;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-image {
+            text-align: center;
+        }
+
+        .about-image img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* Services Section */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            background-color: #1e3a8a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .service-card h3 {
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+        }
+
+        /* Team Section */
+        .team {
+            background-color: #f8fafc;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .team-member {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .team-member img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            object-fit: cover;
+        }
+
+        .team-member h3 {
+            color: #1e3a8a;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-member .title {
+            color: #6b7280;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        /* Info Section */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+
+        .info-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .info-card h3 {
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-card li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .info-card li:last-child {
+            border-bottom: none;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+        }
+
+        .footer-section p, .footer-section a {
+            color: #cbd5e1;
+            text-decoration: none;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #3b82f6;
+            color: #cbd5e1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: #1e3a8a;
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Welcome to UMP Clinic System</h1>
-    <nav>
-      <a href="/auth/login">Login</a>
-    </nav>
-  </header>
-  <main>
-    <% if (success) { %>
-      <p class="success"><%= success %></p>
-    <% } %>
-    <% if (error) { %>
-      <p class="error"><%= error %></p>
-    <% } %>
-    <section>
-      <h2>Streamlined Healthcare for Students</h2>
-      <p>Book appointments, view medical history, and manage your health records seamlessly.</p>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            
+            <div class="logo">UMP Campus Clinic</div>
+            <ul class="nav-links" id="navLinks">
+                
+                <% if (user) { %>
+                  <li><a href="/student/profile">Profile</a></li>
+                  <li><a href="/student/appointments">Book Appointment</a></li>
+                  <li><a href="/student/history">History</a></li>
+                  <li><a href="/auth/logout">>logout</a></li>
+                <% } else { %>
+                  <li><a href="#about">About</a></li>
+                  <li><a href="#services">Services</a></li>
+                  <li><a href="#team">Team</a></li>
+                  <li><a href="#info">Hours & Location</a></li>
+                  <li><a href="/auth/login">Login</a></li>
+                <% } %>
+            </ul>
+            <button class="mobile-menu" id="mobileMenu" aria-label="Toggle navigation menu">
+                ☰
+            </button>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Your Health, Our Priority</h1>
+            <p>Comprehensive healthcare services for the university community</p>
+            <div class="cta-buttons">
+                <a href="#contact" class="btn btn-primary">Book Appointment</a>
+                <a href="#contact" class="btn btn-secondary">Contact Us</a>
+            </div>
+        </div>
     </section>
-  </main>
-  <footer>
-    <p>&copy; 2025 University of Mpumalanga Clinic</p>
-  </footer>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title">About the Clinic</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Dedicated to Student Health</h3>
+                    <p>The Mbombela Campus has a Campus Clinic which provides primary health care services and support to students.</p>
+                    <p>The staff in the Campus Clinic subscribe to a holistic approach towards the health care needs of our students and, therefore, offer students a variety of health care services. </p>
+                    <p>The services focus on the promotion of a healthy lifestyles and the prevention of illnesses.</p>
+                </div>
+                <div class="about-image">
+                    <img src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/08763c148032171.62ce0e981e54f.jpg" alt="Modern clinic interior">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2 class="section-title">Services Offered</h2>
+            <p class="section-subtitle">Comprehensive healthcare services tailored to the university community</p>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🩺</div>
+                    <h3>Primary Care</h3>
+                    <p>Routine check-ups, preventive care, and treatment of common illnesses and injuries.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">💉</div>
+                    <h3>Immunizations</h3>
+                    <p>Required vaccinations, travel immunizations, and seasonal flu shots.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🧠</div>
+                    <h3>Mental Health</h3>
+                    <p>Counseling services, stress management, and mental health support.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🏃</div>
+                    <h3>Sports Medicine</h3>
+                    <p>Athletic injury treatment, physical therapy, and sports physicals.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔬</div>
+                    <h3>Laboratory Services</h3>
+                    <p>On-site lab testing, blood work, and diagnostic screenings.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">💊</div>
+                    <h3>Pharmacy</h3>
+                    <p>On-campus pharmacy with prescription medications and over-the-counter supplies.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="team">
+        <div class="container">
+            <h2 class="section-title">Meet the Medical Team</h2>
+            <p class="section-subtitle">Experienced healthcare professionals dedicated to your wellbeing</p>
+            <div class="team-grid">
+                <div class="team-member">
+                    <img src="https://static.vecteezy.com/system/resources/previews/000/371/879/non_2x/vector-a-doctor-at-clinic-background.jpg" alt="...">
+                    <h3>Dr. Theophilus</h3>
+                    <p class="title">Clinic Director</p>
+                    <p>Board-certified family medicine physician with 15 years of experience in student health.</p>
+                </div>
+                <div class="team-member">
+                    <img src="https://static.vecteezy.com/system/resources/previews/000/371/879/non_2x/vector-a-doctor-at-clinic-background.jpg" alt="...">
+                    <h3>Dr.Siyabonga</h3>
+                    <p class="title">Primary Care Physician</p>
+                    <p>Specializing in preventive care and chronic disease management for young adults.</p>
+                </div>
+                <div class="team-member">
+                    <img src="https://static.vecteezy.com/system/resources/previews/000/371/879/non_2x/vector-a-doctor-at-clinic-background.jpg" alt="...">
+                    <h3>Welcome, NP</h3>
+                    <p class="title">Nurse Practitioner</p>
+                    <p>Certified nurse practitioner focusing on women's health and mental wellness.</p>
+                </div>
+                <div class="team-member">
+                    <img src="https://static.vecteezy.com/system/resources/previews/000/371/879/non_2x/vector-a-doctor-at-clinic-background.jpg" alt="...">
+                    <h3>Chirwa, LCSW</h3>
+                    <p class="title">Licensed Clinical Social Worker</p>
+                    <p>Providing counseling and mental health support for students and staff.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hours & Location / Insurance Section -->
+    <section id="info" class="info">
+        <div class="container">
+            <h2 class="section-title">Hours & Location</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>📍 Location</h3>
+                    <p><strong>University Campus Clinic</strong><br>
+                    Building 7, 2nd Floor<br>
+                    Cnr R40 and D725 Road<br>
+                    Mbombela, 1200</p>
+                    <p><strong>Parking:</strong> Available</p>
+                </div>
+                <div class="info-card">
+                    <h3>🕒 Hours of Operation</h3>
+                    <ul>
+                        <li><strong>Monday - Friday:</strong> 8:00 AM - 4:00 PM</li>
+                        <li><strong>Weekends:</strong> Closed</li>
+                        <li><strong>Emergency:</strong> 24/7 Nurse Hotline</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h3>💳 Funders</h3>
+                    <p>Free & Students only:</p>
+                    <ul>
+                        <li>Johnson & Johnson</li>
+                        <li>Uniliver</li>
+                        <li>Tigerbrands</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Contact Information</h3>
+                    <p><strong>Phone:</strong> (555) 123-4567</p>
+                    <p><strong>Email:</strong> health@university.edu</p>
+                    <p><strong>Emergency:</strong> (555) 911-HELP</p>
+                    <p><strong>Appointments:</strong> (555) 123-APPT</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <p><a href="#services">Services</a></p>
+                    <p><a href="#team">Medical Team</a></p>
+                    <p><a href="#info">Hours & Location</a></p>
+                    <p><a href="#">Patient Portal</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <p><a href="#">Health Forms</a></p>
+                    <p><a href="#">Insurance Information</a></p>
+                    <p><a href="#">Wellness Tips</a></p>
+                    <p><a href="#">Campus Health Resources</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 University Health Clinic. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenu = document.getElementById('mobileMenu');
+        const navLinks = document.getElementById('navLinks');
+
+        mobileMenu.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on a link
+        navLinks.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A') {
+                navLinks.classList.remove('active');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const headerHeight = document.querySelector('header').offsetHeight;
+                    const targetPosition = target.offsetTop - headerHeight;
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Add scroll effect to header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.backgroundColor = 'rgba(30, 58, 138, 0.95)';
+                header.style.backdropFilter = 'blur(10px)';
+            } else {
+                header.style.backgroundColor = '#1e3a8a';
+                header.style.backdropFilter = 'none';
+            }
+        });
+
+        // Simple form validation for contact forms (if added later)
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // Accessibility: Focus management for mobile menu
+        mobileMenu.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                navLinks.classList.toggle('active');
+            }
+        });
+
+        // Add loading animation for service cards
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe service cards and team members for animation
+        document.querySelectorAll('.service-card, .team-member').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+    </script>
 </body>
 </html>

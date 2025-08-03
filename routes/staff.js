@@ -144,8 +144,17 @@ router.get('/manage_records/:student_id/profile', ensureStaff, async (req, res) 
 router.post('/manage_records/:student_id/visit', ensureStaff, [
   body('date').isDate().withMessage('Invalid date'),
   body('diagnosis').trim().isLength({ min: 1 }).withMessage('Diagnosis is required'),
-  body('medication').optional().trim().isLength({ min: 1 }).withMessage('Medication must not be empty if provided'),
-  body('dosage').optional().trim().isLength({ min: 1 }).withMessage('Dosage must not be empty if provided')
+  body('medication').optional({ checkFalsy: true }).trim().custom((value, { req }) => {
+    if (value && !req.body.dosage) {
+      throw new Error('Dosage is required if medication is provided');
+    }
+    if (!value && req.body.dosage) {
+      throw new Error('Medication is required if dosage is provided');
+    }
+    return true;
+  }),
+  body('dosage').optional({ checkFalsy: true }).trim().isLength({ min: 1 }).withMessage('Dosage must not be empty if provided'),
+  body('duration').optional({ checkFalsy: true }).isInt({ min: 1 }).withMessage('Duration must be a positive number of days')
 ], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -154,18 +163,30 @@ router.post('/manage_records/:student_id/visit', ensureStaff, [
   }
 
   const { student_id } = req.params;
-  const { date, diagnosis, notes, medication, dosage, instructions } = req.body;
+  const { date, diagnosis, notes, medication, dosage, instructions, duration } = req.body;
 
   try {
+    // Verify student_id is a valid student
+    const student = await new Promise((resolve, reject) => {
+      db.get(`SELECT id FROM users WHERE id = ? AND role = 'student'`, [student_id], (err, row) => {
+        if (err) return reject(err);
+        resolve(row);
+      });
+    });
+    if (!student) {
+      req.flash('error', 'Invalid student ID');
+      return res.redirect('/staff/manage_records');
+    }
+
     await new Promise((resolve, reject) => {
       db.run('BEGIN TRANSACTION', async (err) => {
         if (err) return reject(err);
         try {
           const visitId = await new Promise((resolve, reject) => {
             db.run(
-              `INSERT INTO visits (student_id, date, diagnosis, notes) 
-               VALUES (?, ?, ?, ?)`,
-              [student_id, date, diagnosis, notes],
+              `INSERT INTO visits (student_id, clinician_id, date, diagnosis, notes) 
+               VALUES (?, ?, ?, ?, ?)`,
+              [student_id, req.session.user.id, date, diagnosis, notes],
               function (err) {
                 if (err) return reject(err);
                 resolve(this.lastID);
@@ -175,9 +196,9 @@ router.post('/manage_records/:student_id/visit', ensureStaff, [
           if (medication && dosage) {
             await new Promise((resolve, reject) => {
               db.run(
-                `INSERT INTO prescriptions (visit_id, medication, dosage, instructions) 
-                 VALUES (?, ?, ?, ?)`,
-                [visitId, medication, dosage, instructions],
+                `INSERT INTO prescriptions (visit_id, medication, dosage, instructions, duration) 
+                 VALUES (?, ?, ?, ?, ?)`,
+                [visitId, medication, dosage, instructions, duration],
                 (err) => {
                   if (err) return reject(err);
                   resolve();
@@ -191,7 +212,7 @@ router.post('/manage_records/:student_id/visit', ensureStaff, [
         }
       });
     });
-    req.flash('success', 'Visit added successfully');
+    req.flash('success', 'Visit and prescription added successfully');
     res.redirect('/staff/manage_records');
   } catch (err) {
     console.error('Add visit error:', err.message);

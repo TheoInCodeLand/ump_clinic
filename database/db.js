@@ -60,10 +60,12 @@ db.serialize(() => {
     CREATE TABLE IF NOT EXISTS visits (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       student_id INTEGER,
+      clinician_id INTEGER,
       date TEXT NOT NULL,
       diagnosis TEXT NOT NULL,
       notes TEXT,
-      FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE
+      FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (clinician_id) REFERENCES users(id) ON DELETE SET NULL
     )
   `);
 
@@ -75,6 +77,7 @@ db.serialize(() => {
       medication TEXT NOT NULL,
       dosage TEXT NOT NULL,
       instructions TEXT,
+      duration TEXT,
       FOREIGN KEY (visit_id) REFERENCES visits(id) ON DELETE CASCADE
     )
   `);

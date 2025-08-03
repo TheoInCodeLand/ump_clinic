@@ -1,36 +1,609 @@
-<!-- views/student/dashboard.ejs (add flash messages) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Dashboard</title>
-  <link rel="stylesheet" href="/css/styles.css">
+  <title>Student Dashboard - UMP Campus Clinic</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #ffffff;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header */
+    header {
+      background-color: #1e3a8a;
+      color: white;
+      padding: 1rem 0;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: #93c5fd;
+    }
+
+    .mobile-menu {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* Main Content */
+    main {
+      padding: 100px 0 80px;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      color: #1e3a8a;
+      margin-bottom: 1rem;
+      font-weight: 300;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      font-size: 1.1rem;
+      color: #6b7280;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      margin-bottom: 2rem;
+      transition: transform 0.3s ease, opacity 0.6s ease;
+    }
+
+    .card h2 {
+      color: #1e3a8a;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .success, .error {
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .success {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+
+    .error {
+      background-color: #fee2e2;
+      color: #991b1b;
+    }
+
+    .status-complete {
+      color: #166534;
+      font-weight: 500;
+    }
+
+    .status-incomplete {
+      color: #991b1b;
+      font-weight: 500;
+    }
+
+    .urgent {
+      color: #991b1b;
+      font-style: italic;
+    }
+
+    .button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      background-color: #1e3a8a;
+      color: white;
+    }
+
+    .button:hover {
+      background-color: #3b82f6;
+      transform: translateY(-2px);
+    }
+
+    .button.cancel {
+      background-color: #991b1b;
+    }
+
+    .button.cancel:hover {
+      background-color: #b91c1c;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    th {
+      background-color: #f8fafc;
+      color: #1e3a8a;
+      font-weight: 500;
+    }
+
+    tr.highlight {
+      background-color: #fef2f2;
+    }
+
+    .status-confirmed {
+      color: #166534;
+    }
+
+    .status-pending {
+      color: #d97706;
+    }
+
+    .status-cancelled {
+      color: #991b1b;
+    }
+
+    /* Footer */
+        footer {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+        }
+
+        .footer-section p, .footer-section a {
+            color: #cbd5e1;
+            text-decoration: none;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #3b82f6;
+            color: #cbd5e1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: #1e3a8a;
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #1e3a8a;
+        flex-direction: column;
+        padding: 1rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+
+      .section-title {
+        font-size: 2rem;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      th, td {
+        min-width: 120px;
+      }
+    }
+
+    /* Smooth scrolling */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Accessibility */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
 </head>
 <body>
+  <!-- Header -->
   <header>
-    <h1>Student Dashboard</h1>
-    <nav>
-      <a href="/student/profile">Profile</a>
-      <a href="/student/appointments">Book Appointment</a>
-      <a href="/student/history">History</a>
-      <a href="/auth/logout">Logout</a>
+    <nav class="container">
+      <div class="logo">UMP Campus Clinic</div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/student/profile">Profile</a></li>
+        <li><a href="/student/appointments">Book Appointment</a></li>
+        <li><a href="/student/history">Visit History</a></li>
+        <li><a href="/student/change-password">Change Password</a></li>
+        <li><a href="/auth/logout">Logout</a></li>
+      </ul>
+      <button class="mobile-menu" id="mobileMenu" aria-label="Toggle navigation menu">
+        ☰
+      </button>
     </nav>
   </header>
-  <main>
-    <% if (success) { %>
-      <p class="success"><%= success %></p>
-    <% } %>
+
+  <!-- Main Content -->
+  <main class="container">
+    
     <% if (error) { %>
       <p class="error"><%= error %></p>
     <% } %>
-    <h2>Welcome, <%= user.name %></h2>
-    <h3>Pending Appointments</h3>
-    <ul>
-      <% appointments.forEach(appointment => { %>
-        <li><%= appointment.date %> at <%= appointment.time %> - <%= appointment.reason %></li>
-      <% }) %>
-    </ul>
+
+    <!-- Profile Status -->
+    <section class="card">
+      <h2 class="section-title">Profile Status</h2>
+      <p>
+        <% if (profileComplete) { %>
+          <span class="status-complete">✓ Profile Complete</span>
+        <% } else { %>
+          <span class="status-incomplete">✗ Complete your profile</span>
+          <a href="/student/profile" class="button">Update Profile</a>
+        <% } %>
+      </p>
+      <p>
+        <% if (passwordChanged) { %>
+          <span class="status-complete">✓ Password Changed</span>
+        <% } else { %>
+          <span class="status-incomplete">✗ Change your default password</span>
+          <a href="/student/change-password" class="button">Change Password</a>
+        <% } %>
+      </p>
+    </section>
+
+    <!-- Upcoming Appointments -->
+    <section class="card">
+      <h2 class="section-title">Upcoming Appointments</h2>
+      <p class="section-subtitle">Manage your scheduled clinic visits</p>
+      <% if (appointments.length === 0) { %>
+        <p>No upcoming appointments.</p>
+        <a href="/student/appointments" class="button">Book Appointment</a>
+      <% } else { %>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Reason</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% appointments.forEach(apt => { %>
+              <tr class="<%= apt.isTomorrow ? 'highlight' : '' %>">
+                <td><%= new Date(apt.date).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></td>
+                <td><%= apt.time %></td>
+                <td><%= apt.reason %></td>
+                <td>
+                  <span class="status-<%= apt.status.toLowerCase() %>">
+                    <%= apt.status %>
+                    <% if (apt.isTomorrow) { %>
+                      <span class="urgent"> (Tomorrow!)</span>
+                    <% } %>
+                  </span>
+                </td>
+                <td>
+                  <form action="/student/cancel_appointment/<%= apt.id %>" method="POST" onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
+                    <button type="submit" class="button cancel">Cancel</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <a href="/student/appointments" class="button">Book Another Appointment</a>
+      <% } %>
+    </section>
+
+    <!-- Recent Visits -->
+    <section class="card">
+      <h2 class="section-title">Recent Clinic Visits</h2>
+      <p class="section-subtitle">View your recent medical history</p>
+      <% if (visits.length === 0) { %>
+        <p>No recent visits.</p>
+      <% } else { %>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Diagnosis</th>
+              <th>Prescription</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% visits.forEach(visit => { %>
+              <tr>
+                <td><%= new Date(visit.date).toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></td>
+                <td><%= visit.diagnosis %></td>
+                <td>
+                  <% if (visit.medication) { %>
+                    <%= visit.medication %> (<%= visit.dosage %>)
+                  <% } else { %>
+                    None
+                  <% } %>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <a href="/student/history" class="button">View Full History</a>
+      <% } %>
+    </section>
+
+    <!-- Active Prescriptions -->
+    <section class="card">
+      <h2 class="section-title">Active Prescriptions</h2>
+      <p class="section-subtitle">Track your current medications</p>
+      <% if (prescriptions.length === 0) { %>
+        <p>No active prescriptions.</p>
+      <% } else { %>
+        <table>
+          <thead>
+            <tr>
+              <th>Medication</th>
+              <th>Dosage</th>
+              <th>Instructions</th>
+              <th>Days Left</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% prescriptions.forEach(p => { %>
+              <tr class="<%= p.daysLeft <= 2 ? 'highlight' : '' %>">
+                <td><%= p.medication %></td>
+                <td><%= p.dosage %></td>
+                <td><%= p.instructions || 'None' %></td>
+                <td>
+                  <%= p.daysLeft %> days
+                  <% if (p.daysLeft <= 2) { %>
+                    <span class="urgent"> (Expiring soon!)</span>
+                  <% } %>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </section>
   </main>
+
+  <!-- Footer -->
+  <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Contact Information</h3>
+                    <p><strong>Phone:</strong> (555) 123-4567</p>
+                    <p><strong>Email:</strong> health@university.edu</p>
+                    <p><strong>Emergency:</strong> (555) 911-HELP</p>
+                    <p><strong>Appointments:</strong> (555) 123-APPT</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <p><a href="#services">Services</a></p>
+                    <p><a href="#team">Medical Team</a></p>
+                    <p><a href="#info">Hours & Location</a></p>
+                    <p><a href="#">Patient Portal</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <p><a href="#">Health Forms</a></p>
+                    <p><a href="#">Insurance Information</a></p>
+                    <p><a href="#">Wellness Tips</a></p>
+                    <p><a href="#">Campus Health Resources</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 University Health Clinic. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+
+  <script>
+    // Mobile menu toggle
+    const mobileMenu = document.getElementById('mobileMenu');
+    const navLinks = document.getElementById('navLinks');
+
+    mobileMenu.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+    });
+
+    // Close mobile menu when clicking on a link
+    navLinks.addEventListener('click', (e) => {
+      if (e.target.tagName === 'A') {
+        navLinks.classList.remove('active');
+      }
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          const headerHeight = document.querySelector('header').offsetHeight;
+          const targetPosition = target.offsetTop - headerHeight;
+          
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    // Add scroll effect to header
+    window.addEventListener('scroll', () => {
+      const header = document.querySelector('header');
+      if (window.scrollY > 100) {
+        header.style.backgroundColor = 'rgba(30, 58, 138, 0.95)';
+        header.style.backdropFilter = 'blur(10px)';
+      } else {
+        header.style.backgroundColor = '#1e3a8a';
+        header.style.backdropFilter = 'none';
+      }
+    });
+
+    // Accessibility: Focus management for mobile menu
+    mobileMenu.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        navLinks.classList.toggle('active');
+      }
+    });
+
+    // Add loading animation for cards
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    // Observe cards for animation
+    document.querySelectorAll('.card').forEach(card => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(card);
+    });
+  </script>
 </body>
 </html>

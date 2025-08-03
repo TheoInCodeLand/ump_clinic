@@ -65,19 +65,14 @@ router.post('/login', [
 });
 
 router.get('/logout', (req, res) => {
-  if (!req.session) {
-    console.error('No session found during logout');
-    return res.redirect('/');
-  }
-  req.session.destroy((err) => {
-    if (err) {
-      console.error('Session destruction error:', err.message);
-      req.flash('error', 'Error logging out, please try again');
-      return res.redirect(req.session?.user?.role === 'student' ? '/student/dashboard' : '/staff/dashboard');
-    }
-    req.flash('success', 'Logged out successfully');
-    res.redirect('/');
-  });
+    req.session.destroy((err) => {
+        if (err) {
+            console.error("Session destruction error:", err);
+            return res.redirect('/');
+        }
+        res.clearCookie('connect.sid');
+        res.redirect('/');
+    });
 });
 
 module.exports = router;

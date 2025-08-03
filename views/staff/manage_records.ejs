@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manage Records</title>
+  <title>Manage Student Records</title>
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
@@ -30,18 +30,20 @@
           <a href="/staff/manage_records/<%= student.id %>/profile">View Profile</a>
         </h3>
         <form action="/staff/manage_records/<%= student.id %>/visit" method="POST">
-          <label for="date">Visit Date:</label>
-          <input type="date" id="date" name="date" required>
-          <label for="diagnosis">Diagnosis:</label>
-          <input type="text" id="diagnosis" name="diagnosis" required>
-          <label for="notes">Notes:</label>
-          <textarea id="notes" name="notes"></textarea>
-          <label for="medication">Medication:</label>
-          <input type="text" id="medication" name="medication">
-          <label for="dosage">Dosage:</label>
-          <input type="text" id="dosage" name="dosage">
-          <label for="instructions">Instructions:</label>
-          <textarea id="instructions" name="instructions"></textarea>
+          <label for="date_<%= student.id %>">Visit Date:</label>
+          <input type="date" id="date_<%= student.id %>" name="date" required>
+          <label for="diagnosis_<%= student.id %>">Diagnosis:</label>
+          <input type="text" id="diagnosis_<%= student.id %>" name="diagnosis" required placeholder="e.g., Influenza">
+          <label for="notes_<%= student.id %>">Notes:</label>
+          <textarea id="notes_<%= student.id %>" name="notes" placeholder="e.g., Patient reports fever for 3 days"></textarea>
+          <label for="medication_<%= student.id %>">Medication:</label>
+          <input type="text" id="medication_<%= student.id %>" name="medication" placeholder="e.g., Amoxicillin">
+          <label for="dosage_<%= student.id %>">Dosage:</label>
+          <input type="text" id="dosage_<%= student.id %>" name="dosage" placeholder="e.g., 500mg twice daily">
+          <label for="duration_<%= student.id %>">Duration (days):</label>
+          <input type="number" id="duration_<%= student.id %>" name="duration" min="1" placeholder="e.g., 7">
+          <label for="instructions_<%= student.id %>">Instructions:</label>
+          <textarea id="instructions_<%= student.id %>" name="instructions" placeholder="e.g., Take with food"></textarea>
           <button type="submit">Add Visit</button>
         </form>
       </div>
